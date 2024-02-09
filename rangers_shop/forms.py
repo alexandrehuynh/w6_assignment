@@ -22,6 +22,6 @@ class ProductForm(FlaskForm):
     name = StringField('Exercise Name', validators=[ DataRequired() ] )
     image = StringField('Img url **Optional')
     muscle = StringField('Target Muscle **Optional')
-    sets = DecimalField('Sets', validators=[ DataRequired() ])
+    sets = IntegerField('Sets', validators=[ DataRequired() ])
     reps = IntegerField('Reps', validators=[ DataRequired() ])
     submit = SubmitField('Submit')

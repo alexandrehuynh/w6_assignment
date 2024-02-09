@@ -74,7 +74,7 @@ class Product(db.Model): #db.Model helps us translate python code to columns in 
     name = db.Column(db.String(50), nullable=False)
     image = db.Column(db.String)
     muscle = db.Column(db.String(200))
-    sets = db.Column(db.Numeric(precision=10, scale=2), nullable=False)
+    sets = db.Column(db.Integer, nullable=False)
     reps = db.Column(db.Integer, nullable=False)
     date_added = db.Column(db.DateTime, default = datetime.utcnow)
     #eventually we need to connect this to orders 

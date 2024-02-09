@@ -10,7 +10,7 @@
             <h5>All your exercises will show up here</h5>
             <a href="{{ url_for('site.create')}}" class="btn btn-outline-light mt-3">Create New Exercise</a>
             {% else %}
-            <h5>Please Sign In to View Shop</h5>
+            <h5>Please Sign In to View Gym</h5>
             <a href="/signin" class="btn btn-outline-light mt-3">Sign In</a>
             {% endif %}
         </div>
@@ -29,9 +29,9 @@
             </div>
             <div class="card-body d-flex flex-column justify-content-center p-4">
                 <h5 class="card-title"> {{ product.name }}</h5>
-                <p class="card-text"> {{ product.description }}</p>
+                <p class="card-text"> {{ product.muscle }}</p>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Sets: {{ product.price }}</li>
+                    <li class="list-group-item">Sets: {{ product.sets }}</li>
                     <li class="list-group-item">Reps: {{ product.reps }}</li>
                     {% if product.reps <= 8 %}
                         <span class='err-msg btn-danger p-2 opacity-50 rounded'> ALERT: reps is leaving hypertrophy zone </span>

@@ -1,19 +1,27 @@
-from flask_wtf import FlaskForm 
-from wtforms import StringField, PasswordField, IntegerField, DecimalField, SubmitField 
-from wtforms.validators import DataRequired, Email, EqualTo
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, IntegerField, DecimalField, SubmitField
+from wtforms.validators import DataRequired, Email, EqualTo 
 
-#creating our login & register forms 
-class LoginForm(FlaskForm):
-    email = StringField('Email', validators=[ DataRequired(), Email()])
-    password = PasswordField('Password', validators=[ DataRequired() ])
+
+# create our Login & Register Form Classes
+class LoginForm(FlaskForm): #inheriting FlaskForm gives us the characteristics/methods for FlaskForm
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Sign In')
-
-
-class RegisterForm(FlaskForm):
+    
+class RegisterForm(FlaskForm): #inheriting FlaskForm gives us the characteristics/methods for FlaskForm
     first_name = StringField('First Name')
     last_name = StringField('Last Name')
-    username = StringField('Username', validators=[ DataRequired() ])
-    email = StringField('Email', validators= [ DataRequired(), Email()])
-    password = PasswordField('Password', validators = [ DataRequired()])
-    confirm_password = PasswordField('Confirm Password', validators=[ DataRequired(), EqualTo('password')])
+    username = StringField('Username', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
+
+class ProductForm(FlaskForm):
+    name = StringField('Exercise Name', validators=[ DataRequired() ] )
+    image = StringField('Img url **Optional')
+    muscle = StringField('Target Muscle **Optional')
+    sets = DecimalField('Sets', validators=[ DataRequired() ])
+    reps = IntegerField('Reps', validators=[ DataRequired() ])
+    submit = SubmitField('Submit')

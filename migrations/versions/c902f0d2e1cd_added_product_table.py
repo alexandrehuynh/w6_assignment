@@ -23,7 +23,7 @@ def upgrade():
     sa.Column('name', sa.String(length=50), nullable=False),
     sa.Column('image', sa.String(), nullable=True),
     sa.Column('exercise', sa.String(length=200), nullable=True),
-    sa.Column('sets', sa.Numeric(precision=10, scale=2), nullable=False),
+    sa.Column('sets', sa.Integer(), nullable=False),
     sa.Column('reps', sa.Integer(), nullable=False),
     sa.Column('date_added', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('prod_id')

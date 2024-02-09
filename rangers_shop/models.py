@@ -74,10 +74,11 @@ class Product(db.Model): #db.Model helps us translate python code to columns in 
     name = db.Column(db.String(50), nullable=False)
     image = db.Column(db.String)
     muscle = db.Column(db.String(200))
-    sets = db.Column(db.Integer, nullable=False)
+    sets = db.Column(db.Numeric(precision=10, scale=2), nullable=False)
     reps = db.Column(db.Integer, nullable=False)
     date_added = db.Column(db.DateTime, default = datetime.utcnow)
-    #eventually we need to connect this to orders 
+    # UPDATE RELATIONSHIP WITH PRODORDER TABLE
+    prodord = db.relationship('ProdOrder', backref = 'product', lazy=True) # establishing relationship between ProdOrder & Product table
 
     def __init__(self, name, sets, reps, image="", muscle=""):
         self.prod_id = self.set_id()
@@ -115,6 +116,104 @@ class Product(db.Model): #db.Model helps us translate python code to columns in 
     def __repr__(self):
         return f"<Product: {self.name}>"
     
+
+
+#only need this for purposes of tracking what customers are tied to what orders & also how many customers we have
+class Customer(db.Model):
+    cust_id = db.Column(db.String, primary_key=True)
+    date_created = db.Column(db.DateTime, default = datetime.utcnow())
+    #this is how we tie a table to another one (so not a column but establishing a relationship)
+    prodord = db.relationship('ProdOrder', backref = 'customer', lazy=True) #lazy = True means is we dont need the ProdOrder table to have a customer
+
+    def __init__(self, cust_id):
+        self.cust_id = cust_id #when a customer makes an order on the frontend they will pass us their cust_id 
+
+
+    def __repr__(self):
+        return f"<Customer: {self.cust_id}>"
+    
+
+
+
+#example of a join table
+#because Products can be on many Orders
+#and Orders can have many Products (many-to-many) relationship needs a Join table
+
+
+class ProdOrder(db.Model):
+    prodorder_id = db.Column(db.String, primary_key=True)
+    #first instance of using a primary key as a foreign key on THIS table
+    prod_id = db.Column(db.String, db.ForeignKey('product.prod_id'), nullable=False)
+    reps = db.Column(db.Integer, nullable = False)
+    sets = db.Column(db.Numeric(precision=10, scale=2), nullable = False)
+    order_id = db.Column(db.String, db.ForeignKey('order.order_id'), nullable = False)
+    cust_id = db.Column(db.String, db.ForeignKey('customer.cust_id'), nullable = False)
+
+
+    def __init__(self, prod_id, reps, sets, order_id, cust_id):
+        self.prodorder_id = self.set_id()
+        self.prod_id = prod_id 
+        self.reps = reps 
+        self.sets = self.set_reps(reps, sets) 
+        self.order_id = order_id
+        self.cust_id = cust_id 
+
+
+    def set_id(self):
+        return str(uuid.uuid4())
+    
+
+
+    def set_reps(self, reps, sets):
+
+        reps = float(reps)
+        sets = float(sets)
+
+        self.reps = reps * sets #this total price for that product multiplied by quantity purchased 
+        return self.reps
+    
+
+    def update_reps(self, reps):
+
+        self.reps = float(reps)
+        return self.reps
+    
+
+class Order(db.Model):
+    order_id = db.Column(db.String, primary_key=True)
+    order_total = db.Column(db.Numeric(precision=10, scale=2), nullable = False)
+    date_created = db.Column(db.DateTime, default = datetime.utcnow())
+    prodord = db.relationship('ProdOrder', backref = 'order', lazy=True) #establishing that relationship, NOT A COLUMN
+
+
+
+    def __init__(self):
+        self.order_id = self.set_id()
+        self.order_total = 0.00
+
+    
+    def set_id(self):
+        return str(uuid.uuid4())
+    
+
+    def increment_ordertotal(self, sets):
+
+        self.order_total = float(self.order_total) #just making sure its a float 
+        self.order_total += float(sets)
+
+        return self.order_total
+    
+    def decrement_ordertotal(self, sets):
+
+        self.order_total = float(self.order_total) #just making sure its a float 
+        self.order_total -= float(sets)
+
+        return self.order_total
+    
+
+    def __repr__(self):
+        return f"<Order: {self.order_id}>"
+
 
 
 
